@@ -57,8 +57,8 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
         {
             var email = credentials.Email;
             var password = credentials.Password;
-
-            // TODO: bcrypt
+            // bcrypt
+            password = BCrypt.Net.BCrypt.HashPassword(password, 10);
 
             _context.Users.Add(
             new User
