@@ -79,8 +79,8 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
             });
         }
 
-        // POST: api/Users/Login
-        [HttpPost("Login")]
+        // POST: api/Users/Signin
+        [HttpPost("Signin")]
         public async Task<ActionResult<UserDTO>> Signin([FromBody] Credentials credentials)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == credentials.Email);
