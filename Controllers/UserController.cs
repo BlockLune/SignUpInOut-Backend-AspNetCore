@@ -1,0 +1,88 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SignUpInOut_Backend_AspNetCore.Models;
+
+namespace SignUpInOut_Backend_AspNetCore.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
+    {
+        private readonly SignupinoutDbContext _context;
+
+        public UserController(SignupinoutDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/User
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+        {
+            UserDTO[] users = await _context.Users.Select(user =>
+                new UserDTO
+                {
+                    Id = user.Id,
+                    Email = user.Email
+                }).ToArrayAsync();
+            return users;
+        }
+
+        // GET: api/User/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDTO>> GetUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return new UserDTO
+            {
+                Id = user.Id,
+                Email = user.Email
+            };
+        }
+
+        // POST: api/User
+        [HttpPost]
+        public async Task<ActionResult<UserDTO>> PostUser([FromBody] Credentials credentials)
+        {
+            var email = credentials.Email;
+            var password = credentials.Password;
+
+            // TODO: bcrypt
+
+            _context.Users.Add(
+            new User
+            {
+                Email = email,
+                Password = password
+            });
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(PostUser), new UserDTO
+            {
+                Id = GetUserId(email)!.Value,
+                Email = email
+            });
+        }
+
+        private bool UserExists(int id)
+        {
+            return _context.Users.Any(e => e.Id == id);
+        }
+
+        private int? GetUserId(string email)
+        {
+            return _context.Users.FirstOrDefault(e => e.Email == email)?.Id;
+        }
+    }
+}

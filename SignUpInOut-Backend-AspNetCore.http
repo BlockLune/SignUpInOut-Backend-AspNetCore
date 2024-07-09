@@ -1,0 +1,6 @@
+@SignUpInOut_Backend_AspNetCore_HostAddress = http://localhost:5137
+
+GET {{SignUpInOut_Backend_AspNetCore_HostAddress}}
+Accept: application/json
+
+###
