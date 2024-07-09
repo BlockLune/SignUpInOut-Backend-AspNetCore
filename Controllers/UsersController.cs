@@ -11,16 +11,17 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly SignupinoutDbContext _context;
 
-        public UserController(SignupinoutDbContext context)
+        public UsersController(SignupinoutDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/User
+        /*
+        // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
@@ -32,8 +33,10 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
                 }).ToArrayAsync();
             return users;
         }
+        */
 
-        // GET: api/User/5
+        /*
+        // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
@@ -50,8 +53,9 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
                 Email = user.Email
             };
         }
+        */
 
-        // POST: api/User
+        // POST: api/Users
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser([FromBody] Credentials credentials)
         {
@@ -73,6 +77,24 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
                 Id = GetUserId(email)!.Value,
                 Email = email
             });
+        }
+
+        // POST: api/Users/Login
+        [HttpPost("Login")]
+        public async Task<ActionResult<UserDTO>> Signin([FromBody] Credentials credentials)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == credentials.Email);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(credentials.Password, user.Password))
+            {
+                return Unauthorized();
+            }
+
+            return new UserDTO
+            {
+                Id = user.Id,
+                Email = user.Email
+            };
         }
 
         private bool UserExists(int id)
