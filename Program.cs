@@ -6,7 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // captcha
-builder.Services.AddHeiCaptcha();
+builder.Services.AddSingleton<SecurityCodeHelper>(); // 注册 SecurityCodeHelper 为单例
+builder.Services.AddScoped<CaptchaCache>(); // 注册 CaptchaCache 为作用域范围的服务
+
 // cors
 builder.Services.AddCors(options =>
 {

@@ -14,10 +14,12 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
     public class UsersController : ControllerBase
     {
         private readonly SignupinoutDbContext _context;
+        private readonly CaptchaCache _captchaCache;
 
-        public UsersController(SignupinoutDbContext context)
+        public UsersController(SignupinoutDbContext context, CaptchaCache captchaCache)
         {
             _context = context;
+            _captchaCache = captchaCache;
         }
 
         /*
@@ -63,8 +65,7 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
             var password = signupForm.Password;
             var captchaId = signupForm.CaptchaId;
             var captchaAnswer = signupForm.CaptchaAnswer;
-            // !! IS THIS CORRECT??? I'M NOT SURE.
-            if (!captchaId.Equals(captchaAnswer))
+            if (!_captchaCache.VerifyCaptcha(captchaId, captchaAnswer))
             {
                 return BadRequest("Invalid captcha");
             }
