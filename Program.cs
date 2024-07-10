@@ -1,9 +1,12 @@
+using Hei.Captcha;
 using Microsoft.EntityFrameworkCore;
 using SignUpInOut_Backend_AspNetCore.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// captcha
+builder.Services.AddHeiCaptcha();
 // cors
 builder.Services.AddCors(options =>
 {

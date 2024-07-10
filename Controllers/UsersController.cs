@@ -57,10 +57,18 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> PostUser([FromBody] Credentials credentials)
+        public async Task<ActionResult<UserDTO>> PostUser([FromBody] SignupForm signupForm)
         {
-            var email = credentials.Email;
-            var password = credentials.Password;
+            var email = signupForm.Email;
+            var password = signupForm.Password;
+            var captchaId = signupForm.CaptchaId;
+            var captchaAnswer = signupForm.CaptchaAnswer;
+            // !! IS THIS CORRECT??? I'M NOT SURE.
+            if (!captchaId.Equals(captchaAnswer))
+            {
+                return BadRequest("Invalid captcha");
+            }
+
             // bcrypt
             password = BCrypt.Net.BCrypt.HashPassword(password, 10);
 
