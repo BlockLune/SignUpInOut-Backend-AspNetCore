@@ -7,6 +7,9 @@ namespace SignUpInOut_Backend_AspNetCore.Models
     {
         private readonly DiscordSocketClient _client;
         private readonly string _token;
+        private readonly string _clientId;
+        private readonly string _clientSecret;
+
 
         public DiscordBotService(DiscordSocketClient client)
         {
@@ -14,7 +17,21 @@ namespace SignUpInOut_Backend_AspNetCore.Models
             _client.Log += LogAsync;
             _client.MessageReceived += MessageReceivedAsync;
 
-            _token = Environment.GetEnvironmentVariable("SIGNUPINOUT_DISCORD_BOT_TOKEN") ?? "";
+            _token = Environment
+                .GetEnvironmentVariable("SIGNUPINOUT_DISCORD_BOT_TOKEN") ??
+                throw new InvalidOperationException(
+                    "Discord token not found"
+                );
+            _clientId = Environment
+                .GetEnvironmentVariable("SIGNUPINOUT_DISCORD_CLIENT_ID") ??
+                throw new InvalidOperationException(
+                    "Discord client ID not found"
+                );
+            _clientSecret = Environment
+                .GetEnvironmentVariable("SIGNUPINOUT_DISCORD_CLIENT_SECRET") ??
+                throw new InvalidOperationException(
+                    "Discord client secret not found"
+                );
         }
 
         public async Task InitializeAsync()
