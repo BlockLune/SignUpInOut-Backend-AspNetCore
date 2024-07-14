@@ -31,8 +31,10 @@ namespace SignUpInOut_Backend_AspNetCore.Models
 
         private async Task MessageReceivedAsync(SocketMessage messageParam)
         {
+            Console.WriteLine(messageParam.Content);
+
             if (messageParam.Author.IsBot) return;
-            if (messageParam.Content == "您好")
+            if (messageParam.Content.Contains("您好"))
             {
                 await messageParam.Channel.SendMessageAsync("您也好呀");
             }
