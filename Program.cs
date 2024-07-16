@@ -49,8 +49,6 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.MapHub<ChatHub>("/hub");
-
 var botService = app.Services.GetRequiredService<DiscordBotService>();
 await botService.InitializeAsync();
 
@@ -66,5 +64,7 @@ app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/hub");
 
 app.Run();
