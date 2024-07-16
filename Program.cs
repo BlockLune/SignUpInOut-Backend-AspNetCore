@@ -2,8 +2,8 @@ using Hei.Captcha;
 using Microsoft.EntityFrameworkCore;
 using SignUpInOut_Backend_AspNetCore.Models;
 using DotNetEnv;
-using Discord;
 using Discord.WebSocket;
+using SignUpInOut_Backend_AspNetCore.Hubs;
 
 Env.Load();
 
@@ -13,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 // discord bot
 builder.Services.AddSingleton<DiscordSocketClient>();
 builder.Services.AddSingleton<DiscordBotService>();
+
+// SignalR
+builder.Services.AddSignalR();
 
 // captcha
 builder.Services.AddSingleton<SecurityCodeHelper>(); // 注册 SecurityCodeHelper 为单例
@@ -42,6 +45,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.MapHub<ChatHub>("/hub");
 
 var botService = app.Services.GetRequiredService<DiscordBotService>();
 await botService.InitializeAsync();
