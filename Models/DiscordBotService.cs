@@ -1,5 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Microsoft.AspNetCore.SignalR;
+using SignUpInOut_Backend_AspNetCore.Hubs;
 
 namespace SignUpInOut_Backend_AspNetCore.Models
 {
@@ -9,10 +11,12 @@ namespace SignUpInOut_Backend_AspNetCore.Models
         private readonly string _token;
         private readonly string _clientId;
         private readonly string _clientSecret;
+        private readonly IHubContext<ChatHub> _hubContext;
 
 
-        public DiscordBotService(DiscordSocketClient client)
+        public DiscordBotService(DiscordSocketClient client, IHubContext<ChatHub> hubContext)
         {
+            _hubContext = hubContext;
             _client = client;
             _client.Log += LogAsync;
             _client.MessageReceived += MessageReceivedAsync;
@@ -53,6 +57,7 @@ namespace SignUpInOut_Backend_AspNetCore.Models
             if (messageParam.Author.IsBot) return;
             if (messageParam.Content.Contains("您好"))
             {
+                await _hubContext.Clients.All.SendAsync("messageReceived", "DiscordBot", "您也好呀");
                 await messageParam.Channel.SendMessageAsync("您也好呀");
             }
         }
