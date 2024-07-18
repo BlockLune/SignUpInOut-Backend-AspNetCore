@@ -35,7 +35,7 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
 
         // POST api/Discord/signin
         [HttpPost("signin")]
-        public async Task<ActionResult> Signin([FromQuery] string code)
+        public async Task<ActionResult<Credentials>> Signin([FromQuery] string code)
         {
             try
             {
@@ -63,12 +63,33 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
 
                 if (tokenResponse != null)
                 {
-                    Console.WriteLine(tokenResponse.AccessToken);
-                    var discordUser = await GetDiscordUser(tokenResponse.AccessToken);
+                    Console.WriteLine("Bearer Token: " + tokenResponse.AccessToken);
 
-                    Console.WriteLine(discordUser.Username);
+                    await using var discordRestClient = new DiscordRestClient();
+                    await discordRestClient.LoginAsync(TokenType.Bearer, tokenResponse.AccessToken);
 
-                    return Ok("Authentication successful");
+                    var email = discordRestClient.CurrentUser.Email;
+
+                    if (await _userService.UserExistsAsync(email))
+                    {
+                        return Ok("Authentication successful");
+                    } else
+                    {
+                        var randomPassword = Guid.NewGuid().ToString();
+                        var user = await _userService.SignUpAsync(email, randomPassword);
+                        if (user != null)
+                        {
+                            return Created("New user created", new Credentials
+                            {
+                                Email = user.Email,
+                                Password = randomPassword
+                            });
+                        } else
+                        {
+                            return StatusCode(500, "Failed to create user");
+                        }
+                    }
+
                 }
                 return Unauthorized();
 
@@ -78,13 +99,6 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
                 Console.Error.WriteLine(ex);
                 return Unauthorized();
             }
-        }
-
-        private async Task<RestUser> GetDiscordUser(string accessToken)
-        {
-            await using var client = new DiscordRestClient();
-            await client.LoginAsync(TokenType.Bearer, accessToken);
-            return client.CurrentUser;
         }
     }
 }
