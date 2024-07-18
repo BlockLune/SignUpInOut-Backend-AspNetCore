@@ -4,25 +4,13 @@ using SignUpInOut_Backend_AspNetCore.Models;
 using DotNetEnv;
 using Discord.WebSocket;
 using SignUpInOut_Backend_AspNetCore.Hubs;
+using SignUpInOut_Backend_AspNetCore.Services;
 
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// http client
-builder.Services.AddHttpClient();
-// discord bot
-builder.Services.AddSingleton<DiscordSocketClient>();
-builder.Services.AddSingleton<DiscordBotService>();
-
-// SignalR
-builder.Services.AddSignalR();
-
-// captcha
-builder.Services.AddSingleton<SecurityCodeHelper>(); // 注册 SecurityCodeHelper 为单例
-builder.Services.AddScoped<CaptchaCache>(); // 注册 CaptchaCache 为作用域范围的服务
-
 // cors
 builder.Services.AddCors(options =>
 {
@@ -36,9 +24,22 @@ builder.Services.AddCors(options =>
 });
 
 // db context
-var dbContextString = builder.Configuration.GetConnectionString("DefaultConnection");
+var dbConnectionStr = Environment.GetEnvironmentVariable("SIGNUPINOUT_DB_CONNECTION_STRING") ??
+    builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<SignupinoutDbContext>(options =>
-    options.UseMySql(dbContextString, ServerVersion.AutoDetect(dbContextString)));
+    options.UseMySql(dbConnectionStr, ServerVersion.AutoDetect(dbConnectionStr)));
+// http client
+builder.Services.AddHttpClient();
+// SignalR
+builder.Services.AddSignalR();
+// captcha
+builder.Services.AddSingleton<SecurityCodeHelper>(); // 注册 SecurityCodeHelper 为单例
+builder.Services.AddScoped<CaptchaCacheService>(); // 注册 CaptchaCache 为作用域范围的服务
+// user
+builder.Services.AddScoped<UserService>();
+// discord bot
+builder.Services.AddSingleton<DiscordSocketClient>();
+builder.Services.AddSingleton<DiscordBotService>();
 
 // controllers
 builder.Services.AddControllers();

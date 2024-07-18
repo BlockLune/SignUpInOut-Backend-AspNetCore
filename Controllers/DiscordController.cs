@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Text;
+using SignUpInOut_Backend_AspNetCore.Services;
 
 namespace SignUpInOut_Backend_AspNetCore.Controllers
 {
@@ -13,11 +14,13 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
     public class DiscordController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly UserService _userService;
         private readonly string _clientId;
         private readonly string _clientSecret;
-        public DiscordController(IHttpClientFactory httpClientFactory)
+        public DiscordController(IHttpClientFactory httpClientFactory, UserService userService)
         {
             _httpClientFactory = httpClientFactory;
+            _userService = userService;
             _clientId = Environment
                 .GetEnvironmentVariable("SIGNUPINOUT_DISCORD_CLIENT_ID") ??
                 throw new InvalidOperationException(
@@ -62,16 +65,18 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
                 {
                     Console.WriteLine(tokenResponse.AccessToken);
                     var discordUser = await GetDiscordUser(tokenResponse.AccessToken);
+
                     Console.WriteLine(discordUser.Username);
+
                     return Ok("Authentication successful");
                 }
-                return StatusCode(500, "An error occurred during authentication");
+                return Unauthorized();
 
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine(ex);
-                return StatusCode(500, "An error occurred during authentication");
+                return Unauthorized();
             }
         }
 

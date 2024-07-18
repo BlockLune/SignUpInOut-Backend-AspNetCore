@@ -3,12 +3,12 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Security.Cryptography;
 using System.Text;
 
-public class CaptchaCache
+public class CaptchaCacheService
 {
   private readonly SecurityCodeHelper _securityCode;
   private static readonly IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
 
-  public CaptchaCache(SecurityCodeHelper securityCodeHelper)
+  public CaptchaCacheService(SecurityCodeHelper securityCodeHelper)
   {
     _securityCode = securityCodeHelper;
   }

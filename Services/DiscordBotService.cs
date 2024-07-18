@@ -3,14 +3,13 @@ using Discord.WebSocket;
 using Microsoft.AspNetCore.SignalR;
 using SignUpInOut_Backend_AspNetCore.Hubs;
 
-namespace SignUpInOut_Backend_AspNetCore.Models
+namespace SignUpInOut_Backend_AspNetCore.Services
 {
     public class DiscordBotService
     {
         private readonly DiscordSocketClient _client;
         private readonly string _token;
         private readonly IHubContext<ChatHub> _hubContext;
-
 
         public DiscordBotService(DiscordSocketClient client, IHubContext<ChatHub> hubContext)
         {
