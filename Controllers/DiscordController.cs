@@ -69,11 +69,13 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
                     await discordRestClient.LoginAsync(TokenType.Bearer, tokenResponse.AccessToken);
 
                     var email = discordRestClient.CurrentUser.Email;
+                    Console.WriteLine("Discord User Email: ", email);
 
                     if (await _userService.UserExistsAsync(email))
                     {
-                        return Ok("Authentication successful");
-                    } else
+                        return Ok("User with email " + email + " already exists");
+                    }
+                    else
                     {
                         var randomPassword = Guid.NewGuid().ToString();
                         var user = await _userService.SignUpAsync(email, randomPassword);
@@ -84,7 +86,8 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
                                 Email = user.Email,
                                 Password = randomPassword
                             });
-                        } else
+                        }
+                        else
                         {
                             return StatusCode(500, "Failed to create user");
                         }

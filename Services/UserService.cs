@@ -17,7 +17,8 @@ namespace SignUpInOut_Backend_AspNetCore.Services
                 return null;
             }
             var passwordToStore = BCrypt.Net.BCrypt.HashPassword(password, 10);
-            await _dbContext.Users.AddAsync(new User {
+            await _dbContext.Users.AddAsync(new User
+            {
                 Email = email,
                 Password = passwordToStore
             });
@@ -46,11 +47,11 @@ namespace SignUpInOut_Backend_AspNetCore.Services
         }
         public async Task<User?> GetUserAsync(int id)
         {
-            return await _dbContext.Users.FindAsync(id);
+            return await _dbContext.Users.FirstOrDefaultAsync(e => e.Id == id);
         }
         public async Task<User?> GetUserAsync(string email)
         {
-            return await _dbContext.Users.FindAsync(email);
+            return await _dbContext.Users.FirstOrDefaultAsync(e => e.Email == email);
         }
         public async Task<bool> UserExistsAsync(int id)
         {
@@ -58,7 +59,7 @@ namespace SignUpInOut_Backend_AspNetCore.Services
         }
         public async Task<bool> UserExistsAsync(string email)
         {
-           return await _dbContext.Users.AnyAsync(e => e.Email == email);
+            return await _dbContext.Users.AnyAsync(e => e.Email == email);
         }
         public static UserDTO UserToDTO(User user)
         {
