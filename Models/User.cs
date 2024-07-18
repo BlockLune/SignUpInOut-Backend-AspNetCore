@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SignUpInOut_Backend_AspNetCore.Models;
+﻿namespace SignUpInOut_Backend_AspNetCore.Models;
 
 public partial class User
 {

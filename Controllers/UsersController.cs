@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SignUpInOut_Backend_AspNetCore.Models;
@@ -21,41 +16,6 @@ namespace SignUpInOut_Backend_AspNetCore.Controllers
             _context = context;
             _captchaCache = captchaCache;
         }
-
-        /*
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
-        {
-            UserDTO[] users = await _context.Users.Select(user =>
-                new UserDTO
-                {
-                    Id = user.Id,
-                    Email = user.Email
-                }).ToArrayAsync();
-            return users;
-        }
-        */
-
-        /*
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserDTO>> GetUser(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return new UserDTO
-            {
-                Id = user.Id,
-                Email = user.Email
-            };
-        }
-        */
 
         // POST: api/Users
         [HttpPost]

@@ -2,10 +2,9 @@ using Discord.Rest;
 using Discord;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using System.Text.Json;
+using System.Text;
 
 namespace SignUpInOut_Backend_AspNetCore.Controllers
 {

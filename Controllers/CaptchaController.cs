@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SignUpInOut_Backend_AspNetCore.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace SignUpInOut_Backend_AspNetCore.Controllers
 {
