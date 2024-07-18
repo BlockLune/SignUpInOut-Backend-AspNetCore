@@ -10,6 +10,8 @@ Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// http client
+builder.Services.AddHttpClient();
 // discord bot
 builder.Services.AddSingleton<DiscordSocketClient>();
 builder.Services.AddSingleton<DiscordBotService>();
